@@ -39,7 +39,7 @@ var SupportedLanguages = map[string]string{
 
 const (
 	DrawingBoardBaseWidth  = 1600
-	DrawingBoardBaseHeight = 900
+	DrawingBoardBaseHeight = 1200
 	MinBrushSize           = 8
 	MaxBrushSize           = 32
 )

@@ -129,6 +129,10 @@ select {
     padding-right: 0.35rem;
 }
 
+input#ready-state-start {
+    display: none;
+}
+
 textarea {
     padding-left: 0.40rem;
     padding-top: 0.20rem;

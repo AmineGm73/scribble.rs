@@ -23,7 +23,7 @@ function connectToWebsocket() {
         if (socket.readyState != 1 && !hasSocketEverConnected) {
             socketIsConnecting = false;
             showTextDialog("connection-error-dialog",
-                '{{.Translation.Get "error-connecting"}}',
+                "{{.Translation.Get "error-connecting"}}",
                 `{{.Translation.Get "error-connecting-text"}}`);
             console.log("Error establishing connection: ", error);
         } else {
@@ -59,7 +59,7 @@ function showReconnectDialogIfNotShown() {
 
     //Since the content is constant, there's no need to ever show two.
     if (previousReconnectDialog === undefined || previousReconnectDialog === null) {
-        showTextDialog(reconnectDialogId, '{{.Translation.Get "connection-lost"}}',
+        showTextDialog(reconnectDialogId, "{{.Translation.Get "connection-lost"}}",
             `{{.Translation.Get "connection-lost-text"}}`);
     }
 }
@@ -233,20 +233,20 @@ const helpDialogId = "help-dialog";
 function showHelpDialog() {
     closeDialog(helpDialogId);
     const controlsLabel = document.createElement("b");
-    controlsLabel.innerText = '{{.Translation.Get "controls"}}';
+    controlsLabel.innerText = "{{.Translation.Get "controls"}}";
 
     const controlsTextOne = document.createElement("p");
-    controlsTextOne.innerText = '{{.Translation.Get "switch-tools-intro"}}:';
+    controlsTextOne.innerText = "{{.Translation.Get "switch-tools-intro"}}:";
 
     const controlsTextTwo = document.createElement("p");
-    controlsTextTwo.innerHTML = '{{.Translation.Get "pencil"}}: <kbd>Q</kbd><br/>' +
-        '{{.Translation.Get "fill-bucket"}}: <kbd>W</kbd><br/>' +
-        '{{.Translation.Get "eraser"}}: <kbd>E</kbd><br/>';
+    controlsTextTwo.innerHTML = "{{.Translation.Get "pencil"}}: <kbd>Q</kbd><br/>" +
+        "{{.Translation.Get "fill-bucket"}}: <kbd>W</kbd><br/>" +
+        "{{.Translation.Get "eraser"}}: <kbd>E</kbd><br/>";
 
     const controlsTextThree = document.createElement("p");
-    controlsTextThree.innerHTML = '{{printf (.Translation.Get "switch-pencil-sizes") "<kbd>1</kbd>" "<kbd>4</kbd>"}}';
+    controlsTextThree.innerHTML = "{{printf (.Translation.Get "switch-pencil-sizes") "<kbd>1</kbd>" "<kbd>4</kbd>"}}";
 
-    const closeButton = createDialogButton('{{.Translation.Get "close"}}');
+    const closeButton = createDialogButton("{{.Translation.Get "close"}}");
     closeButton.addEventListener("click", () => {
         closeDialog(helpDialogId)
     })
@@ -264,7 +264,7 @@ function showHelpDialog() {
     dialogContent.appendChild(controlsTextThree);
     dialogContent.appendChild(footer);
 
-    showDialog(helpDialogId, '{{.Translation.Get "help"}}', dialogContent, buttonBar);
+    showDialog(helpDialogId, "{{.Translation.Get "help"}}", dialogContent, buttonBar);
 }
 document.getElementById("help-button").addEventListener("click", showHelpDialog);
 
@@ -759,8 +759,8 @@ function sendMessage(event) {
     // While the backend already checks for message length, we want to
     // prevent the loss of input and omit the event / clear here.
     if (encoder.encode(messageInput.value).length > 10000) {
-        appendMessage("system-message", '{{.Translation.Get "system"}}',
-            '{{.Translation.Get "message-too-long"}}');
+        appendMessage("system-message", "{{.Translation.Get "system"}}",
+            "{{.Translation.Get "message-too-long"}}");
         //We keep the messageInput content, since it could've been
         //something important and we don't want the user having to
         //rewrite it. Instead they can send it via some other means
@@ -862,7 +862,7 @@ function registerMessageHandler(targetSocket) {
                 waitChooseDrawerSpan.innerText = parsed.data.playerName;
             }
         } else if (parsed.type === "correct-guess") {
-            playWav('{{.RootPath}}/resources/{{.WithCacheBust "plop.wav"}}');
+            playWav("{{.RootPath}}/resources/{{.WithCacheBust "plop.wav"}}");
 
             if (parsed.data === ownID) {
                 appendMessage("correct-guess-message", null, `{{.Translation.Get "correct-guess"}}`);
@@ -881,7 +881,7 @@ function registerMessageHandler(targetSocket) {
         } else if (parsed.type === "message") {
             appendMessage(null, parsed.data.author, parsed.data.content);
         } else if (parsed.type === "system-message") {
-            appendMessage("system-message", '{{.Translation.Get "system"}}', parsed.data);
+            appendMessage("system-message", "{{.Translation.Get "system"}}", parsed.data);
         } else if (parsed.type === "non-guessing-player-message") {
             appendMessage("non-guessing-player-message", parsed.data.author, parsed.data.content);
         } else if (parsed.type === "line") {
@@ -928,7 +928,7 @@ function registerMessageHandler(targetSocket) {
 
             //If a player doesn't choose, the dialog will still be up.
             wordDialog.style.visibility = "hidden";
-            playWav('{{.RootPath}}/resources/{{.WithCacheBust "end-turn.wav"}}');
+            playWav("{{.RootPath}}/resources/{{.WithCacheBust "end-turn.wav"}}");
 
             clear(context);
 
@@ -949,7 +949,7 @@ function registerMessageHandler(targetSocket) {
 
             setAllowDrawing(false);
         } else if (parsed.type === "your-turn") {
-            playWav('{{.RootPath}}/resources/{{.WithCacheBust "your-turn.wav"}}');
+            playWav("{{.RootPath}}/resources/{{.WithCacheBust "your-turn.wav"}}");
             //This dialog could potentially stay visible from last
             //turn, in case nobody has chosen a word.
             waitChooseDialog.style.visibility = "hidden";
@@ -958,32 +958,32 @@ function registerMessageHandler(targetSocket) {
             applyDrawData(parsed.data);
         } else if (parsed.type === "kick-vote") {
             if (parsed.data.playerId === ownID && parsed.data.voteCount >= parsed.data.requiredVoteCount) {
-                alert('{{.Translation.Get "self-kicked"}}');
+                alert("{{.Translation.Get "self-kicked"}}");
                 document.location.href = "{{.RootPath}}/";
             } else {
-                let kickMessage = '{{.Translation.Get "kick-vote"}}'.format(parsed.data.voteCount, parsed.data.requiredVoteCount, parsed.data.playerName);
+                let kickMessage = "{{.Translation.Get "kick-vote"}}".format(parsed.data.voteCount, parsed.data.requiredVoteCount, parsed.data.playerName);
                 if (parsed.data.voteCount >= parsed.data.requiredVoteCount) {
-                    kickMessage += ' {{.Translation.Get "player-kicked"}}';
+                    kickMessage += " {{.Translation.Get "player-kicked"}}";
                 }
-                appendMessage("system-message", '{{.Translation.Get "system"}}', kickMessage);
+                appendMessage("system-message", "{{.Translation.Get "system"}}", kickMessage);
             }
         } else if (parsed.type === "owner-change") {
             ownerID = parsed.data.playerId;
             updateButtonVisibilities();
-            appendMessage("system-message", '{{.Translation.Get "system"}}', '{{.Translation.Get "owner-change"}}'.format(parsed.data.playerName));
+            appendMessage("system-message", "{{.Translation.Get "system"}}", "{{.Translation.Get "owner-change"}}".format(parsed.data.playerName));
         } else if (parsed.type === "drawer-kicked") {
-            appendMessage("system-message", '{{.Translation.Get "system"}}', '{{.Translation.Get "drawer-kicked"}}');
+            appendMessage("system-message", "{{.Translation.Get "system"}}", "{{.Translation.Get "drawer-kicked"}}");
         } else if (parsed.type === "lobby-settings-changed") {
             rounds = parsed.data.rounds;
             updateRoundsDisplay();
             updateButtonVisibilities();
-            appendMessage("system-message", '{{.Translation.Get "system"}}', '{{.Translation.Get "lobby-settings-changed"}}\n\n'
-                + '{{.Translation.Get "drawing-time-setting"}}: ' + parsed.data.drawingTime + "\n"
-                + '{{.Translation.Get "rounds-setting"}}: ' + parsed.data.rounds + "\n"
-                + '{{.Translation.Get "public-lobby-setting"}}: ' + parsed.data.public + "\n"
-                + '{{.Translation.Get "max-players-setting"}}: ' + parsed.data.maxPlayers + "\n"
-                + '{{.Translation.Get "custom-words-per-turn-setting"}}: ' + parsed.data.customWordsPerTurn + "%\n"
-                + '{{.Translation.Get "players-per-ip-limit-setting"}}: ' + parsed.data.clientsPerIpLimit);
+            appendMessage("system-message", "{{.Translation.Get "system"}}", "{{.Translation.Get "lobby-settings-changed"}}\n\n"
+                + "{{.Translation.Get "drawing-time-setting"}}: " + parsed.data.drawingTime + "\n"
+                + "{{.Translation.Get "rounds-setting"}}: " + parsed.data.rounds + "\n"
+                + "{{.Translation.Get "public-lobby-setting"}}: " + parsed.data.public + "\n"
+                + "{{.Translation.Get "max-players-setting"}}: " + parsed.data.maxPlayers + "\n"
+                + "{{.Translation.Get "custom-words-per-turn-setting"}}: " + parsed.data.customWordsPerTurn + "%\n"
+                + "{{.Translation.Get "players-per-ip-limit-setting"}}: " + parsed.data.clientsPerIpLimit);
         } else if (parsed.type === "shutdown") {
             socket.onclose = null;
             socket.close();
@@ -1268,12 +1268,12 @@ function applyPlayers(players) {
         if (oldPlayer && oldPlayer.state === "spectating" && player.state !== "spectating") {
             appendMessage(
                 "system-message",
-                '{{.Translation.Get "system"}}',
+                "{{.Translation.Get "system"}}",
                 `${player.name} is now participating`);
         } else if (oldPlayer && oldPlayer.state !== "spectating" && player.state === "spectating") {
             appendMessage(
                 "system-message",
-                '{{.Translation.Get "system"}}',
+                "{{.Translation.Get "system"}}",
                 `${player.name} is now spectating`);
         }
 
@@ -1331,7 +1331,7 @@ function applyPlayers(players) {
 
         const lastPlayerscoreSpan = document.createElement("span");
         lastPlayerscoreSpan.classList.add("last-turn-score");
-        lastPlayerscoreSpan.innerText = '{{.Translation.Get "last-turn"}}'.format(player.lastScore);
+        lastPlayerscoreSpan.innerText = "{{.Translation.Get "last-turn"}}".format(player.lastScore);
         playerscoreDiv.appendChild(lastPlayerscoreSpan);
 
         playerContainer.appendChild(playerDiv);

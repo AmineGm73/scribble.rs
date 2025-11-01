@@ -17,6 +17,8 @@
     <link rel="prefetch" href='{{.RootPath}}/resources/{{.WithCacheBust "checkmark.svg"}}' />
     <link rel="prefetch" href='{{.RootPath}}/resources/{{.WithCacheBust "sound.svg"}}' />
     <link rel="prefetch" href='{{.RootPath}}/resources/{{.WithCacheBust "no-sound.svg"}}' />
+
+    <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
 </head>
 
 <body>
@@ -153,6 +155,9 @@
                                             class="dialog-button">{{.Translation.Get "apply"}}</button>
                                     </div>
                                 </div>
+                            </div>
+                            <div id="qrcode">
+                                <img height="200px" src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.britannica.com%2F17%2F155017-050-9AC96FC8%2FExample-QR-code.jpg&f=1&nofb=1&ipt=ff7b8e5ef359eff97034f1d7728180990365b909edb5661078d4b527232681e8" alt="">
                             </div>
                             <div class="button-bar">
                                 <div class="ready-check-box-wrapper">
@@ -381,9 +386,69 @@
             </div>
         </div>
     </div>
-
+    <div id="qr-temp" style="display: none;"></div>
     <script type="text/javascript" src='{{.RootPath}}/resources/{{.WithCacheBust "draw.js"}}'></script>
     <script type="text/javascript" src='{{.RootPath}}/{{.WithCacheBust "lobby.js"}}'></script>
+
+    <script>
+        // Get references to the elements
+        const qrImage = document.querySelector('#qrcode img');
+        const qrTempDiv = document.getElementById('qr-temp');
+        const currentUrl = window.location.href;
+
+        /**
+         * Generates the QR code on a temporary canvas, extracts the image data,
+         * and applies it to the visible <img> element.
+         */
+        function generateQRCodeImage(textToEncode) {
+            
+            // 1. Generate QR Code into the hidden temporary div
+            try {
+                // qrcode.js generates a <canvas> element inside qrTempDiv
+                new QRCode(qrTempDiv, {
+                    text: textToEncode,
+                    width: 256,
+                    height: 256,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+                
+                // 2. Extract the base64 image data from the canvas
+                // Use a slight delay to ensure the canvas is fully drawn before extraction
+                setTimeout(() => {
+                    const canvas = qrTempDiv.querySelector('canvas');
+                    
+                    if (canvas) {
+                        const dataURL = canvas.toDataURL("image/png");
+                        
+                        // 3. Update the visible <img> element's source
+                        qrImage.src = dataURL;
+                        qrImage.classList.remove('opacity-0'); // Fade in the image
+                        console.log("QR Code image successfully generated and applied.");
+                        
+                        // 4. Clean up the temporary canvas
+                        qrTempDiv.innerHTML = ''; 
+                    } else {
+                         console.error("Canvas element not found after generation.");
+                    }
+                }, 50); // Small delay
+            
+            } catch (error) {
+                // Display a failure message
+                qrImage.alt = "Error generating QR code.";
+                qrImage.src = "https://placehold.co/256x256/fecaca/dc2626?text=ERROR";
+                qrImage.classList.remove('opacity-0');
+                console.error("QR Code generation error:", error);
+            }
+        }
+
+        // Initialize the app on load: generate the QR code for the current URL
+        window.onload = function() {
+            generateQRCodeImage(currentUrl);
+        };
+
+    </script>
 </body>
 
 </html>
